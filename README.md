@@ -2,35 +2,29 @@
 
 ![SevenistControllerV1_Render.webp](images/SevenistControllerV1_Render.webp)
 
-A 64-track MIDI CC control surface built on an ESP32-S3. Intended as a
-product for other users eventually, not just a one-off hobby build - so
-architecture and pin/config choices stay reasonably clean and documented
-rather than throwaway prototype code.
+A 64-track MIDI CC control surface built on an ESP32-S3.
 
 > **Status: mid-rework.**
 
 
 ## What it is
 
-- 8 physical endless-rotation potentiometer modules, paired into 4 visible
-  **track slots** at once.
-- Tracks are user-created (not a fixed grid) - up to 64 live in a flat,
-  positional list. Each track has an upper/lower knob whose behavior
-  depends on its control type:
-  - **DUAL** - two independent MIDI CC outputs, one per knob.
-  - **LFO** - a CC output driven by a waveform (sine/triangle/square/saw),
+- 8 physical endless-rotation potentiometer modules, paired into 4 
+  **tracks**.
+- Multiple **track** types :
+  - **DUAL** - two independent MIDI CC list outputs, one per knob.
+  - **LFO** - a CCs output driven by a waveform (sine/triangle/square/saw),
     clock-synced or free-running.
-  - **STEPSEQ** - a 64-step note sequencer.
-  - **MOTIONSEQ** - a 64-step CC/parameter sequencer.
-- Config (control type, CC assignments, channel, range, transfer curve,
-  color) is edited via a rotary encoder + button on a 128×64 OLED.
-- 8 addressable RGB LEDs (one per pot) give per-track visual feedback.
-- 16 preset slots persisted to onboard flash (LittleFS).
+  - **STEPSEQ** - a 64max-step note sequencer.
+  - **MOTIONSEQ** - a 64max-step CC/parameter sequencer.
+- Config via a rotary encoder + button on a 128×64 OLED screen.
+- 8 addressable RGB LEDs to give per-track visual feedback.
+- 16 preset slots
 - MIDI I/O over Type-A 3.5mm Jack and USB.
 
 ## Hardware
 
-Dev Board: ESP32-S3 DevKitC-1 (no PSRAM), 4MB flash. Pin/hardware constants
+Dev Board: [ESP32-S3 Zero by Waveshare](https://docs.waveshare.com/ESP32-S3-Zero), 4MB flash. Pin/hardware constants
 live in [include/boardConfig.h](include/boardConfig.h).
 \+ Custom PCB (see [VTM Hardware repository](https://github.com/sevenist/SevenistController-VTM-Hardware) to order on JLCPCB, PCBWay or other fab)
 
@@ -43,8 +37,7 @@ live in [include/boardConfig.h](include/boardConfig.h).
 | WS2812 data | GPIO1 | 8 LEDs (FastLED) |
 | Encoder A / B / switch | GPIO4 / GPIO5 / GPIO6 |  |
 
-The 8 pots are endless-rotation potentiometers (not standard single-turn pots or
-optical/magnetic incremental encoders) - each outputs a sin/cos-like analog
+The 8 pots are endless-rotation potentiometers, each outputs a sin/cos-like analog
 pair decoded into an accumulated position by `Quadrature`
 (`src/driver/quadrature.h`/`.cpp`).
 
@@ -78,8 +71,3 @@ src/
 include/
   boardConfig.h Pin assignments, hardware constants, track-list capacity.
 ```
-
-Firmware runs as four FreeRTOS tasks at different rates (encoder/mux
-polling, menu/app logic, render, and a fast track-clock task pinned to
-core 1) - see PROJECT.md's "Firmware architecture" section for the full
-breakdown.
