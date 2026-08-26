@@ -1,5 +1,7 @@
 # Sevenist Controller
 
+![SevenistControllerV1_Render.png](images\SevenistControllerV1_Render.png)
+
 A 64-track MIDI CC control surface built on an ESP32-S3. Intended as a
 product for other users eventually, not just a one-off hobby build - so
 architecture and pin/config choices stay reasonably clean and documented
